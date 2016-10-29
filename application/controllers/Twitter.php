@@ -51,11 +51,18 @@ class Twitter extends CI_Controller {
 		$data['trends'] = $trends;
 		$data['trends_indonesia'] = $trends_indonesia;
 		$data['trends_jakarta'] = $trends_jakarta;
-		
-		$this->load->view('layouts/twitter/header',$web);
-		$this->load->view('layouts/twitter/navbar');
-		$this->load->view('contents//twitter/trends',$data);
-		$this->load->view('layouts/twitter/footer');
+		if (200 == $connection->getLastHttpCode()) {
+			$this->load->view('layouts/twitter/header',$web);
+			$this->load->view('layouts/twitter/navbar');
+			$this->load->view('contents//twitter/trends',$data);
+			$this->load->view('layouts/twitter/footer');
+		} else {
+			echo "<pre>";
+			print_r($data);
+			echo "<pre>";
+		    // redirect('/username/'.$_SESSION['screen_name']);
+		}
+
 	}
 
 	public function username($username)
@@ -141,5 +148,17 @@ class Twitter extends CI_Controller {
 				$_SESSION[$key] = $value;
 			}
 		}
+	}
+
+	public function ajaxGetTrends() {
+		$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
+		$trends = $connection->get('trends/place', array('id' => 23424977));
+		$trends_indonesia = $connection->get('trends/place', array('id' => 23424846));
+		$trends_jakarta = $connection->get('trends/place', array('id' => 1047378));
+			
+		$data['trends'] = $trends;
+		$data['trends_indonesia'] = $trends_indonesia;
+		$data['trends_jakarta'] = $trends_jakarta;
+		echo json_encode($data);
 	}
 }
