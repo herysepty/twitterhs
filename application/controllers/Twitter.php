@@ -40,6 +40,41 @@ class Twitter extends CI_Controller {
 		$this->load->view('layouts/twitter/footer');
 	}
 
+	public function search (){
+		$web['site_name'] = 'Search';
+		// print_r($data);
+		$this->load->view('layouts/twitter/header',$web);
+		$this->load->view('layouts/twitter/navbar');
+		$this->load->view('contents//twitter/search');
+		$this->load->view('layouts/twitter/footer');
+	}
+
+	public function searchResult(){
+		$access_token = $_SESSION['access_token'];
+		$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $access_token['oauth_token'], $access_token['oauth_token_secret']);
+		$tweets = $connection->get("search/tweets", ["q" => $_POST['q'],"count"=>100,"result_type"=>"recent"]);
+        echo json_encode($tweets->statuses);
+	}
+	public function getAllTweets(){
+		$max_id=0;
+		$tweets_all = array();
+		$access_token = $_SESSION['access_token'];
+		$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $access_token['oauth_token'], $access_token['oauth_token_secret']);
+		for ($i=0; $i < 2; $i++) 
+        { 
+            $tweets = $connection->get("search/tweets", ["q" => 'ahok',"count"=>2,"max_id"=>$max_id,"result_type"=>"recent"]);
+            $tweets_all = array_merge($tweets_all,$tweets->statuses);
+        	$tmp = end($tweets->statuses);
+        	$max_id      = $tmp->id_str;
+        }
+
+        echo "<pre>";
+        // print_r($tmp->id_str);
+        // echo print_r(json_encode($tweets_all));
+        file_put_contents('storages/'.date('Y-m-d_his').'.json',json_encode($tweets_all));
+        echo "</pre>";
+	}
+
 	public function trend() {
 		$web['site_name'] = 'Trends';
 		$access_token = $_SESSION['access_token'];
