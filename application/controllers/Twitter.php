@@ -28,12 +28,43 @@ class Twitter extends CI_Controller {
 	}
 	public function index()
 	{
-		$this->load->view('layouts/twitter/header');
+		$web['site_name'] = 'Timeline';
+		$access_token = $_SESSION['access_token'];
+		$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
+		$timelines = $connection->get("statuses/user_timeline", array('count' => 100, 'exclude_replies' => true, 'screen_name' => $_SESSION['screen_name']));
+		$data['timelines'] = $timelines;
+		// print_r($data);
+		$this->load->view('layouts/twitter/header',$web);
+		$this->load->view('layouts/twitter/navbar');
+		$this->load->view('contents//twitter/timeline',$data);
+		$this->load->view('layouts/twitter/footer');
+	}
+
+	public function trend() {
+		$web['site_name'] = 'Trends';
+		$access_token = $_SESSION['access_token'];
+		$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET);
+		$trends = $connection->get('trends/place', array('id' => 23424977));
+		$trends_indonesia = $connection->get('trends/place', array('id' => 23424846));
+		$trends_jakarta = $connection->get('trends/place', array('id' => 1047378));
+			
+		$data['trends'] = $trends;
+		$data['trends_indonesia'] = $trends_indonesia;
+		$data['trends_jakarta'] = $trends_jakarta;
+		
+		$this->load->view('layouts/twitter/header',$web);
+		$this->load->view('layouts/twitter/navbar');
+		$this->load->view('contents//twitter/trends',$data);
+		$this->load->view('layouts/twitter/footer');
 	}
 
 	public function username($username)
 	{
-
+		$web['site_name'] = $_SESSION['screen_name'];
+		$this->load->view('layouts/twitter/header',$web);
+		$this->load->view('layouts/twitter/navbar');
+		$this->load->view('contents//twitter/profile');
+		$this->load->view('layouts/twitter/footer');
 	}
 
 	public function login()
@@ -55,7 +86,6 @@ class Twitter extends CI_Controller {
 			print_r($user);
 			echo "</pre>";
 		}
-
 	}
 
 	public function callback()
@@ -65,11 +95,11 @@ class Twitter extends CI_Controller {
 			$request_token = [];
 			$request_token['oauth_token'] = $_SESSION['oauth_token'];
 			$request_token['oauth_token_secret'] = $_SESSION['oauth_token_secret'];
-			$connection = new TwitterOAuth(Consumer_Key, Consumer_Secret, $request_token['oauth_token'], $request_token['oauth_token_secret']);
+			$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $request_token['oauth_token'], $request_token['oauth_token_secret']);
 			$access_token = $connection->oauth("oauth/access_token", array("oauth_verifier" => $_REQUEST['oauth_verifier']));
 			$_SESSION['access_token'] = $access_token;
+			$this->userInfo();
 			// redirect user back to index page
-			// header('Location: ./');
 
 			// $user_id = $user_info->id;
 
@@ -81,15 +111,35 @@ class Twitter extends CI_Controller {
 			} else {
 			    session_destroy();
 			}
+			header('/username/'.$_SESSION['screen_name']);
 		}else
 		{
-			header('Location: login.php');
+			redirect('/login');
 		}
 	}
-
 	public function logout() {
 		session_unset();
 		session_destroy();
-		header('Location: ../index.php');
+		redirect('/');
+	}
+
+	public function directMessages() {
+		$access_token = $_SESSION['access_token'];
+		$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $access_token['oauth_token'], $access_token['oauth_token_secret']);
+		$messages = $connection->get('direct_messages', ['count' => 5]);
+		echo "<pre>";
+		print_r($messages);
+		echo "</pre>";
+	}
+	public function userInfo() {
+		$access_token = $_SESSION['access_token'];
+		$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $access_token['oauth_token'], $access_token['oauth_token_secret']);
+		$user = $connection->get("account/verify_credentials");
+		foreach ($user as $key => $value) {
+			// echo $value."<br>";
+			if($key != 'entities' AND $key != 'status') {
+				$_SESSION[$key] = $value;
+			}
+		}
 	}
 }

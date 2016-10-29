@@ -90,4 +90,6 @@ HS DEFINED TWITTER API
 
 define("CONSUMER_KEY", "WwFKUmblnk8BtuPwZWl9YFqtf");
 define("CONSUMER_SECRET", "fTAv7ukNXKaShgCPM18aDZwYTbfmAIjQ0Y6VYfOwTjIw75kQh5");
-define("URL_CALLBACK_TWITTER","http://localhost/angular_hs/index.php/twitter/callback.php");
+define("ACCESS_TOKEN", "715720484491399169-8DazXEQFdRRNGrjC40oLlXvmXPqrmPU");
+define("ACCESS_TOKEN_SECRET", "eniq3eSIsmJxqoMvJCzKxGL5YpB0H5CHOtOlsYfgYBwET");
+define("URL_CALLBACK_TWITTER","http://localhost/twitterhs/index.php/twitter/callback");
