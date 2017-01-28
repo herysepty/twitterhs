@@ -25,6 +25,7 @@ class Twitter extends CI_Controller {
 		parent::__construct();
 		$this->load->helper('url');	
 		$this->load->library('session');
+		date_default_timezone_set("Asia/Jakarta");
 	}
 	public function index()
 	{
@@ -56,22 +57,40 @@ class Twitter extends CI_Controller {
         echo json_encode($tweets->statuses);
 	}
 	public function getAllTweets(){
-		$max_id=0;
+		$max_id=0 ;
 		$tweets_all = array();
 		$access_token = $_SESSION['access_token'];
 		$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $access_token['oauth_token'], $access_token['oauth_token_secret']);
-		for ($i=0; $i < 2; $i++) 
+		for ($i=0; $i < 10; $i++) 
         { 
-            $tweets = $connection->get("search/tweets", ["q" => 'ahok',"count"=>2,"max_id"=>$max_id,"result_type"=>"recent"]);
-            $tweets_all = array_merge($tweets_all,$tweets->statuses);
+            $tweets = $connection->get("search/tweets", ["q" => 'ahok',"count"=>100,"max_id"=>$max_id,"result_type"=>"recent"]);
+            foreach ($tweets->statuses as $key => $value) {
+            	$tweets_all[$value->id_str] = 	[
+													'id_str' => $value->id_str,
+													'text' => $value->text,
+													'created_at' => $value->created_at,
+													'screen_name' => $value->user->screen_name,
+													'coordinates' => $value->coordinates,
+													'place' => $value->place,
+													'retweet_count' => $value->retweet_count,
+													'favorite_count' => $value->favorite_count,
+													'lang' => $value->lang
+												];
+            }
         	$tmp = end($tweets->statuses);
         	$max_id      = $tmp->id_str;
         }
+        $current_array = current($tweets_all);
+        $end_array = end($tweets_all);
+        $tmp_current_array = date('Y_m_d_his',strtotime($current_array['created_at']));
+        $tmp_end_array = date('Y_m_d_his',strtotime($end_array['created_at']));
 
+        // echo $tmp_end_array;
+        // echo $tmp_end_array;
+        echo COUNT($tweets_all);
         echo "<pre>";
-        // print_r($tmp->id_str);
-        // echo print_r(json_encode($tweets_all));
-        file_put_contents('storages/'.date('Y-m-d_his').'.json',json_encode($tweets_all));
+        echo print_r($tweets_all);
+        file_put_contents('storages/'.$tmp_end_array.'-'.$tmp_end_array.'.json',json_encode($tweets_all));
         echo "</pre>";
 	}
 
