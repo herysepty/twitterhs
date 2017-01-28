@@ -9,9 +9,6 @@ $(document).ready(function(){
 
     if(url === base_url+'index.php/trend'){
     	setInterval(function(){
-    		$('.trends_us').html("");
-    		$('.trends_jakarta').html("");
-    		$('.trends_indonesia').html("");
     		$.ajax({
 	    		type: 'GET',
 	    		dataType: "json",
@@ -38,9 +35,9 @@ $(document).ready(function(){
 	    					// console.log(value.name);
 	    				});
 	    			});
-	    			$('.trends_us').empty().html(trends_us);
-	    			$('.trends_jakarta').empty().html(trends_jakarta);
-	    			$('.trends_indonesia').empty().html(trends_indonesia);
+	    			$(".trends_us").html(trends_us);
+	    			$(".trends_jakarta").html(trends_jakarta);
+	    			$(".trends_indonesia").html(trends_indonesia);
 	   			}
 	   		});
 	   	},10000);

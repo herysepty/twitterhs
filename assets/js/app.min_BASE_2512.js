@@ -9,9 +9,6 @@ $(document).ready(function(){
 
     if(url === base_url+'index.php/trend'){
     	setInterval(function(){
-    		$('.trends_us').html("");
-    		$('.trends_jakarta').html("");
-    		$('.trends_indonesia').html("");
     		$.ajax({
 	    		type: 'GET',
 	    		dataType: "json",
@@ -21,30 +18,31 @@ $(document).ready(function(){
 	    				// console.log(trend);
 	    				$.each(trend.trends, function(index, value) {
 	    					trends_us += '<p>'+value.name+'</p>';
-	    					// console.log(value.name);
+	    					console.log(value.name);
 	    				});
 	    			});
 	    			$.each(result.trends_jakarta, function(trends, trend) {
 	    				// console.log(trend);
 	    				$.each(trend.trends, function(index, value) {
 	    					trends_jakarta += '<p>'+value.name+'</p>';
-	    					// console.log(value.name);
+	    					console.log(value.name);
 	    				});
 	    			});
 	    			$.each(result.trends_indonesia, function(trends, trend) {
 	    				// console.log(trend);
 	    				$.each(trend.trends, function(index, value) {
 	    					trends_indonesia += '<p>'+value.name+'</p>';
-	    					// console.log(value.name);
+	    					console.log(value.name);
 	    				});
 	    			});
-	    			$('.trends_us').empty().html(trends_us);
-	    			$('.trends_jakarta').empty().html(trends_jakarta);
-	    			$('.trends_indonesia').empty().html(trends_indonesia);
+	    			$('.trends_us').append(trends_us);
+	    			$('.trends_jakarta').append(trends_jakarta);
+	    			$('.trends_indonesia').append(trends_indonesia);
 	   			}
 	   		});
 	   	},10000);
     }
+
     $('#q').keyup(function(){
     	// console.log($('#q').val());
     	var q = $('#q').val();
@@ -53,6 +51,7 @@ $(document).ready(function(){
 	    	$.ajax({
 	           type:"post",
 		    	dataType: "json",
+
 	           url: base_url+"index.php/twitter/searchresult",
 	           data:{
 	                  'q' : q

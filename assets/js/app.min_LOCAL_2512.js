@@ -21,21 +21,21 @@ $(document).ready(function(){
 	    				// console.log(trend);
 	    				$.each(trend.trends, function(index, value) {
 	    					trends_us += '<p>'+value.name+'</p>';
-	    					// console.log(value.name);
+	    					console.log(value.name);
 	    				});
 	    			});
 	    			$.each(result.trends_jakarta, function(trends, trend) {
 	    				// console.log(trend);
 	    				$.each(trend.trends, function(index, value) {
 	    					trends_jakarta += '<p>'+value.name+'</p>';
-	    					// console.log(value.name);
+	    					console.log(value.name);
 	    				});
 	    			});
 	    			$.each(result.trends_indonesia, function(trends, trend) {
 	    				// console.log(trend);
 	    				$.each(trend.trends, function(index, value) {
 	    					trends_indonesia += '<p>'+value.name+'</p>';
-	    					// console.log(value.name);
+	    					console.log(value.name);
 	    				});
 	    			});
 	    			$('.trends_us').empty().html(trends_us);
@@ -45,6 +45,7 @@ $(document).ready(function(){
 	   		});
 	   	},10000);
     }
+
     $('#q').keyup(function(){
     	// console.log($('#q').val());
     	var q = $('#q').val();
@@ -53,6 +54,7 @@ $(document).ready(function(){
 	    	$.ajax({
 	           type:"post",
 		    	dataType: "json",
+
 	           url: base_url+"index.php/twitter/searchresult",
 	           data:{
 	                  'q' : q

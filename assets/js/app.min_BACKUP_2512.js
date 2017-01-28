@@ -38,9 +38,15 @@ $(document).ready(function(){
 	    					// console.log(value.name);
 	    				});
 	    			});
+<<<<<<< HEAD
 	    			$('.trends_us').empty().html(trends_us);
 	    			$('.trends_jakarta').empty().html(trends_jakarta);
 	    			$('.trends_indonesia').empty().html(trends_indonesia);
+=======
+	    			$(".trends_us").html(trends_us);
+	    			$(".trends_jakarta").html(trends_jakarta);
+	    			$(".trends_indonesia").html(trends_indonesia);
+>>>>>>> 6ec6791a296dfd50e4034f1ef5289c42a9fe15b3
 	   			}
 	   		});
 	   	},10000);
